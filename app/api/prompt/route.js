@@ -9,6 +9,8 @@ export const GET = async (request) => {
 
     return new Response(JSON.stringify(prompts), { status: 200 });
   } catch (error) {
-    return new Response("Failed to fetch all Blogs", { status: 500 });
+    return new Response("Failed to fetch all Tasks", { status: 500 });
   }
 };
+
+export const dynamic = "force-dynamic";

@@ -28,7 +28,7 @@ const Nav = () => {
           height={30}
           className="object-contain"
         />
-        <p className="logo_text">Writely</p>
+        <p className="logo_text">Taskifier</p>
       </Link>
 
       {/* Desktop Navigation */}
@@ -36,7 +36,7 @@ const Nav = () => {
         {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <Link href="/create-prompt" className="black_btn">
-              Create Post
+              Create Task
             </Link>
 
             <button type="button" onClick={signOut} className="outline_btn">
@@ -88,18 +88,11 @@ const Nav = () => {
             {toggleDropdown && (
               <div className="dropdown">
                 <Link
-                  href="/profile"
-                  className="dropdown_link"
-                  onClick={() => setToggleDropdown(false)}
-                >
-                  My Profile
-                </Link>
-                <Link
                   href="/create-prompt"
                   className="dropdown_link"
                   onClick={() => setToggleDropdown(false)}
                 >
-                  Create Blog
+                  Create Task
                 </Link>
                 <button
                   type="button"

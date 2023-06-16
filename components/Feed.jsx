@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
+import { useSession } from "next-auth/react";
 import PromptCard from "./PromptCard";
 
-const PromptCardList = ({ data, handleTagClick }) => {
+const PromptCardList = ({ data, handleDelete }) => {
   return (
     <div className="mt-16 prompt_layout">
       {data.map((post) => (
         <PromptCard
           key={post._id}
           post={post}
-          handleTagClick={handleTagClick}
+          handleDelete={() => handleDelete(post)}
         />
       ))}
     </div>
@@ -20,11 +20,7 @@ const PromptCardList = ({ data, handleTagClick }) => {
 
 const Feed = () => {
   const [allPosts, setAllPosts] = useState([]);
-
-  // Search states
-  const [searchText, setSearchText] = useState("");
-  const [searchTimeout, setSearchTimeout] = useState(null);
-  const [searchedResults, setSearchedResults] = useState([]);
+  const { data: session } = useSession();
 
   const fetchPosts = async () => {
     const response = await fetch("/api/prompt", {
@@ -34,66 +30,39 @@ const Feed = () => {
       },
     });
     const data = await response.json();
+    const userPosts = data.filter(
+      (post) => post.creator._id === session.user.id
+    );
 
-    setAllPosts(data);
+    setAllPosts(userPosts);
   };
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    if (session?.user) fetchPosts();
+  }, [session?.user]);
 
-  const filterPrompts = (searchtext) => {
-    const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
-    return allPosts.filter(
-      (item) =>
-        regex.test(item.creator.username) ||
-        regex.test(item.tag) ||
-        regex.test(item.prompt) ||
-        regex.test(item.title)
-    );
-  };
+  const handleDelete = async (post) => {
+    const hasConfirmed = confirm("Are you sure you want to delete this Blog?");
+    if (hasConfirmed) {
+      try {
+        await fetch(`/api/prompt/${post._id}`, {
+          method: "DELETE",
+        });
 
-  const handleSearchChange = (e) => {
-    clearTimeout(searchTimeout);
-    setSearchText(e.target.value);
-
-    // debounce method
-    setSearchTimeout(
-      setTimeout(() => {
-        const searchResult = filterPrompts(e.target.value);
-        setSearchedResults(searchResult);
-      }, 500)
-    );
-  };
-
-  const handleTagClick = (tagName) => {
-    setSearchText(tagName);
-
-    const searchResult = filterPrompts(tagName);
-    setSearchedResults(searchResult);
+        const filteredPosts = allPosts.filter((item) => item._id !== post._id);
+        setAllPosts(filteredPosts);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   return (
     <section className="feed">
-      <form className="relative w-full flex-center">
-        <input
-          type="text"
-          placeholder="Search for a tag or a username"
-          value={searchText}
-          onChange={handleSearchChange}
-          required
-          className="search_input peer"
-        />
-      </form>
-
-      {/* All Prompts */}
-      {searchText ? (
-        <PromptCardList
-          data={searchedResults}
-          handleTagClick={handleTagClick}
-        />
+      {!session ? (
+        <p className="text-center text-xl font-sans">Sign in to view Tasks</p>
       ) : (
-        <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
+        <PromptCardList data={allPosts} handleDelete={handleDelete} />
       )}
     </section>
   );

@@ -4,11 +4,10 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
   return (
     <section className="w-full max-w-full flex-start flex-col">
       <h1 className="head_text text-left">
-        <span className="blue_gradient">{type} Post</span>
+        <span className="blue_gradient">{type} Task</span>
       </h1>
       <p className="desc text-left max-w-md">
-        {type} and share amazing blogs with the world, and let your knowledge
-        reach the world
+        {type} Tasks & manage your Schedules.
       </p>
 
       <form
@@ -17,26 +16,26 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
       >
         <label>
           <span className="font-satoshi font-semibold text-base text-gray-700">
-            Blog Title
+            Task Title
           </span>
           <input
             value={post.title}
             onChange={(e) => setPost({ ...post, title: e.target.value })}
             type="text"
-            placeholder="Your Blog Title"
+            placeholder="Your Task Title"
             required
             className="form_input"
           />
         </label>
         <label>
           <span className="font-satoshi font-semibold text-base text-gray-700">
-            Your Blog
+            Your Task Description
           </span>
 
           <textarea
             value={post.prompt}
             onChange={(e) => setPost({ ...post, prompt: e.target.value })}
-            placeholder="Write your post here"
+            placeholder="Task Decription goes here"
             required
             className="form_textarea "
           />
@@ -44,16 +43,16 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
 
         <label>
           <span className="font-satoshi font-semibold text-base text-gray-700">
-            Field of Blog{" "}
+            Status{" "}
             <span className="font-normal">
-              (#product, #webdevelopment, #idea, etc.)
+              (Done, Not Done, To be reviewed)
             </span>
           </span>
           <input
             value={post.tag}
             onChange={(e) => setPost({ ...post, tag: e.target.value })}
             type="text"
-            placeholder="#Tag"
+            placeholder="Status"
             required
             className="form_input"
           />
