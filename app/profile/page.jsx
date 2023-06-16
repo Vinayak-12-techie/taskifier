@@ -35,7 +35,7 @@ const MyProfile = () => {
       name="My"
       desc="Welcome to your personalized profile page. Share your exceptional Blogs & knowledge with the World"
       data={myPosts}
-      handleEdit={handleEdit}
+      // handleEdit={handleEdit}
       handleDelete={handleDelete}
     />
   );
